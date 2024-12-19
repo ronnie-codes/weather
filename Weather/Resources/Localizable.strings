@@ -1,0 +1,15 @@
+//
+//  Localizable.strings
+//  Weather
+//
+//  Created by Ronnie Vega on 12/14/24.
+//
+
+"error.generic.title" = "Something went wrong.";
+"error.noNetwork.title" = "No internet connection.";
+"home.coordinator.search.title" = "Search Location";
+"home.view.empty.title" = "No City Selected";
+"home.view.empty.subtitle" = "Please Search For A City";
+"home.view.card.humidity" = "Humidity";
+"home.view.card.uv" = "UV";
+"home.view.card.feelslike" = "Feels Like";
