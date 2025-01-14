@@ -31,11 +31,11 @@ struct HomeView<ViewModel: HomeViewModel>: View {
     var body: some View {
         Group {
             switch viewModel.viewState {
-            case .content(let home):
+            case .content(let home, let homeAstronomy):
                 List {
                     Spacer()
                         .listRowSeparator(.hidden, edges: .all)
-                    HomeContentView(home: home)
+                    HomeContentView(home: home, homeAstronomy: homeAstronomy)
                         .listRowSeparator(.hidden, edges: .all)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
@@ -75,6 +75,7 @@ struct HomeView<ViewModel: HomeViewModel>: View {
 private struct HomeContentView: View {
     /// The `Home` model containing weather data for the current location.
     let home: Home
+    let homeAstronomy: HomeAstronomy
 
     var body: some View {
         VStack(spacing: 35) {
@@ -84,6 +85,7 @@ private struct HomeContentView: View {
                 temperatureText
             }
             weatherDetailCard
+            astronomyCard
         }
         .padding(.horizontal)
     }
@@ -144,6 +146,22 @@ private struct HomeContentView: View {
         .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(16.0)
     }
+
+    private var astronomyCard: some View {
+        HStack(spacing: 56) {
+            WeatherDetailCardStack(
+                localizedTitle: "home.view.astronomy.sunrise",
+                subtitle: homeAstronomy.astronomy.astro.sunrise
+            )
+            WeatherDetailCardStack(
+                localizedTitle: "home.view.astronomy.sunset",
+                subtitle: homeAstronomy.astronomy.astro.sunset
+            )
+        }
+        .padding(24)
+        .background(Color(uiColor: .secondarySystemBackground))
+        .cornerRadius(16.0)
+    }
 }
 
 /// A reusable card component displaying weather detail titles and values in a stack.
@@ -168,7 +186,7 @@ private struct WeatherDetailCardStack: View {
 }
 
 #Preview("Content") {
-    let viewModel = HomeViewModelMock(viewState: .content(Home.mock))
+    let viewModel = HomeViewModelMock(viewState: .content(Home.mock, HomeAstronomy.mock))
     HomeView(viewModel: viewModel)
 }
 

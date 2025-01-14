@@ -12,7 +12,7 @@ import Foundation
 /// - `empty`: Indicates no data is available.
 /// - `loading`: Represents a loading state while fetching data.
 enum HomeViewState {
-    case content(Home)
+    case content(Home, HomeAstronomy)
     case empty
     case loading
 }
@@ -58,8 +58,12 @@ final class HomeViewModelDefault: HomeViewModel {
     /// Fetches weather data asynchronously and updates the view state.
     private func fetchHome() {
         Task { @MainActor in
-            if let home = await repository.getHome() {
-                viewState = .content(home)
+            // Both calls happen concurrently
+            async let home = repository.getHome()
+            async let astronomy = repository.getHomeAstronomy()
+
+            if let home = await home, let astronomy = await astronomy {
+                viewState = .content(home, astronomy)
             } else {
                 viewState = .empty
             }

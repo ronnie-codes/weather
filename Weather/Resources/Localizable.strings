@@ -13,3 +13,5 @@
 "home.view.card.humidity" = "Humidity";
 "home.view.card.uv" = "UV";
 "home.view.card.feelslike" = "Feels Like";
+"home.view.astronomy.sunrise" = "Sunrise";
+"home.view.astronomy.sunset" = "Sunset";

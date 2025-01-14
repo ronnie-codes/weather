@@ -5,6 +5,8 @@
 //  Created by Ronnie Vega on 12/15/24.
 //
 
+import Foundation
+
 /// Protocol defining the responsibilities of the `HomeRepository`.
 /// The repository is responsible for managing and fetching weather data.
 ///
@@ -14,6 +16,7 @@ protocol HomeRepository {
     /// Retrieves the current `Home` data.
     /// - Returns: An optional `Home` object containing weather information, or `nil` if no data is available.
     func getHome() async -> Home?
+    func getHomeAstronomy() async -> HomeAstronomy?
 }
 
 /// Default implementation of `HomeRepository`.
@@ -70,6 +73,27 @@ final class HomeRepositoryDefault: HomeRepository {
             debugPrint(error)
             return local
         }
+    }
+
+    /// Retrieves the `HomeAstronomy` data, using the query from the local cache.
+    /// - Returns: An optional `HomeAstronomy` object containing the latest sunrise/sunset data.
+    func getHomeAstronomy() async -> HomeAstronomy? {
+        // Attempt to fetch data from local storage.
+        guard let local: Home = storageService.get(forKey: "cache"), let query = local.query else {
+            return nil
+        }
+
+        guard let astronomy: HomeAstronomy = try? await networkService.request(
+            method: .get,
+            path: "/astronomy.json",
+            params: ["key": "08ec2096857f43d39e143822241412", // TODO: INJECT THIS
+                     "q": query,
+                     "dt": DateFormatter.default.string(from: Date.now)]
+        ) else {
+            return nil
+        }
+
+        return astronomy
     }
 
     /// Caches the provided `Home` data locally.
